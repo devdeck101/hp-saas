@@ -14,7 +14,9 @@ import { useState } from "react";
  *   - isFirstStep: Function to check if the current step is the first step.
  *   - isLastStep: Function to check if the current step is the last step.
  */
-export const useMultiStepForm = (steps: number) => {
+export const useMultiStepForm: (
+	steps: number,
+) => [number, number, (index: number) => void, () => void, () => void, boolean, boolean] = (steps: number) => {
 	const [currentStep, setCurrentStep] = useState(0);
 
 	/**

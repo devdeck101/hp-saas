@@ -1,17 +1,16 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { buttonVariants } from "../ui/button";
 import { usePathname } from "next/navigation";
 
-interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
+interface MultiStepNavBarProps extends React.HTMLAttributes<HTMLElement> {
     items: {
         title: string
     }[]
 }
 
-const MultiStepNavbar = ({ className, items, ...props }: SidebarNavProps) => {
+const MultiStepNavbar = ({ className, items, ...props }: MultiStepNavBarProps) => {
     const pathname = usePathname()
     return (
         <ul

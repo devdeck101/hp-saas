@@ -2,7 +2,7 @@
 import React, { startTransition, useContext, useState } from 'react'
 import MultiStepWrapper from './multi-step-wrapper'
 
-import MultiStepNavbar from './multi-step-navbar'
+
 import { useMultiStepForm } from '@/hooks/multi-step-form/useMultiStepForm'
 
 import OrgForm from './org-form';
@@ -12,18 +12,15 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import {
     Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+
 } from "@/components/ui/form"
 import { OnboardingSchema } from '@/schemas/onboarding';
 import type { z } from 'zod';
 import { createOrg } from '@/actions/onboarding';
-import { Button } from '../ui/button';
-import { cn } from '@/lib/utils';
+import MultiStepNavbar from './multi-step-navbar';
+import MultiStepNavButtons from './multi-step-nav-buttons';
+
+
 const initialData = {
     name: "",
     image: "",
@@ -51,7 +48,6 @@ const OnboardingForm = () => {
     })
 
     const onSubmit = async (values: z.infer<typeof OnboardingSchema>) => {
-        console.log(values)
         startTransition(async () => {
             try {
                 const { success, error } = await createOrg(values);
@@ -81,21 +77,18 @@ const OnboardingForm = () => {
                             </form>
                         </Form>
                         <CardFooter>
-                            <div className='flex flex-row w-full justify-between mt-4'>
-                                <Button
-                                    variant={'default'}
-                                    size={'sm'}
-                                    onClick={() => previousStep}
-                                    className={cn(`${isFirstStep ? "invisible" : "visible"}`)}
-                                >Anterior</Button>
-                                <Button
-                                    variant={'default'}
-                                    size={'sm'}
-                                    onClick={() => nextStep}
-                                    className={cn(`${isLastStep ? "invisible" : "visible"}`)}
-                                >Próximo</Button>
 
-                            </div>
+                            <MultiStepNavButtons
+                                previousLabel='Anterior'
+                                nextLabel='Próximo'
+                                nextStep={nextStep}
+                                previousStep={previousStep}
+                                isLastStep={isLastStep}
+                                isFirstStep={isFirstStep}
+                                debug
+                                currentStep={currentStep}
+                            />
+
                         </CardFooter>
                     </Card >
                 </FormProvider>
