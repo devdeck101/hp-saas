@@ -5,6 +5,7 @@ import authConfig from "./auth.config";
 import { prisma } from "./lib/db";
 import { findUserbyEmail } from "./services";
 import { isTwoFactorAutenticationEnabled } from "./services/auth";
+import { findOrgByOwnerId } from "./services/onboarding/org";
 export const {
 	handlers: { GET, POST },
 	auth,
@@ -30,23 +31,32 @@ export const {
 			}
 			return true;
 		},
-		async jwt({ token, user }) {
+		async jwt({ token, user, trigger, session }) {
+			if (trigger && trigger === "update" && session) {
+				token.orgId = session.user.orgId;
+				return token;
+			}
 			if (user) {
 				// User is available during sign-in
 				if (user.id) {
 					const isTwoFactorEnabled = await isTwoFactorAutenticationEnabled(user?.id || "");
 					token.isTwoFactorEnabled = isTwoFactorEnabled;
+					const org = await findOrgByOwnerId(user.id);
+					token.orgId = org?.id || "";
+					if (org?.id) {
+						token.role = UserRole.ADMIN;
+					}
 				}
-				token.role = UserRole.DEFAULT;
 			}
 			return token;
 		},
-		session({ session, token }) {
+		async session({ session, token }) {
 			// `session.user.role` is now a valid property, and will be type-checked
 			// in places like `useSession().data.user` or `auth().user`
 			if (session.user && token.sub) {
 				session.user.id = token.sub;
 				session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+				session.user.orgId = token.orgId;
 			}
 			return {
 				...session,

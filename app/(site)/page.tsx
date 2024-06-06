@@ -1,7 +1,8 @@
+import { auth } from "@/auth";
 import Navbar from "@/components/site/navbar";
 import { HandCoins, Twitch, Youtube } from "lucide-react";
 
-export default function Home() {
+export default async function Home() {
 	return (
 		<div className="flex min-h-screen w-full flex-col">
 			<header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 z-10">

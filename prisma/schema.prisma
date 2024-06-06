@@ -33,6 +33,13 @@ model User {
   updatedAt              DateTime  @updatedAt
 }
 
+model Org {
+  id    String  @id @default(cuid())
+  name  String?
+  image String?
+  owner String
+}
+
 model Account {
   userId            String
   type              String
